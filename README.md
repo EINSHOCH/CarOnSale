@@ -34,9 +34,11 @@ Because of the custom submit logic for the custom recaptcha, the form will be al
 3. in the right language
 
 For the coloring we use the class:
+```css
 .required-field-empty {
     background-color: #FCBF0F;
 }
+```
 
 We also need to account for having multiple Forms on our websites. Lets say we have wf-form-Sign-Up and wf-form-Sign-Up-2. That is why we call the function at the end independently for both instances.
 
@@ -187,7 +189,7 @@ ________________________________________________________________________________
 Furthermore we want to track user form interactions, with datalayer pushes. that is why we have the following code:
 
 
-
+```javascript
 <!--Combine two form fields to generate phone number with dialing code-->
 <script>
 
@@ -320,3 +322,4 @@ $("#confirm").click(function() {
 });
 
 </script>
+```
