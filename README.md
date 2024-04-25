@@ -1,6 +1,7 @@
 # CarOnSale
 
 
+
 CarOnSale uses a Webflow Registration Form on their website. This registration form sends all form submits on a custom API endpoint: https://app.caronsale.de/api/v1/user-registration
 
 Because of form validation with ReCaptcha, the button submit button has some custom attributes:
@@ -12,6 +13,7 @@ So the ReCaptcha waits for the onSubmit function, before it can get send.
 
 Therefore we have minimum code to work:
 
+```javascript
 <script>
 function onSubmit(token) {
     var form = document.getElementById('wf-form-Sign-Up');
@@ -22,6 +24,8 @@ function onSubmit(token) {
     }
 }
 </script>
+```
+
 
 ___________________________________
 
