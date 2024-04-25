@@ -100,12 +100,12 @@ document.addEventListener("DOMContentLoaded", function() {
    function onSubmit(token) {
      
 
-        // Funktion zur Validierung und Behandlung von Formularen
+        // Function for validating and handling forms
         function handleForm(formId) {
             var form = document.getElementById(formId);
             if (!form) {
                
-                return; // Wenn das Formular nicht existiert, beende die Funktion
+                return; // If the form does not exist, exit the function
             }
           
 
