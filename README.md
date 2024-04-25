@@ -33,6 +33,11 @@ Because of the custom submit logic for the custom recaptcha, the form will be al
 2. have an clear error message (field placeholder + translated error message as a javascript alert)
 3. in the right language
 
+For the coloring we use the class:
+.required-field-empty {
+    background-color: #FCBF0F;
+}
+
 We also need to account for having multiple Forms on our websites. Lets say we have wf-form-Sign-Up and wf-form-Sign-Up-2. That is why we call the function at the end independently for both instances.
 
 But we also need to take into account, that Webflow has a charakter limitation on sitewide code, and we already have much custom code on some websites. that is why we need to move the code in the head section. But for that we need to ensure that all the HTML elements have to be loaded. Thats why we wrap our calling function in DOMContentLoaded Listener
@@ -62,23 +67,9 @@ Weglot.on("switchersReady", function(initialLanguage) {
 </script>
 
 <script>
-  // make sure all HTML is loaded
 document.addEventListener("DOMContentLoaded", function() {
-    function onSubmit(token) {
-     
-
-        // Function for validating and handling forms
-        function handleForm(formId) {
-            var form = document.getElementById(formId);
-            if (!form) {
-               
-                return; // If the form does not exist, exit the function
-            }
-          
-
-            var requiredFields = form.querySelectorAll('[required]');
-            var userLang = sessionStorage.getItem("reg") || "en";
-          var errorMessages = {
+   
+    var errorMessages = {
     "at": {"input": "muss ausgefüllt werden", "checkbox": "Alle Häkchen sollen gesetzt werden"},
     "dk": {"input": "skal udfyldes", "checkbox": "Alle afkrydsningsfelter skal markeres"},
     "cz": {"input": "musí být vyplněno", "checkbox": "Všechny zaškrtávací políčka musí být zaškrtnuta"},
@@ -97,8 +88,24 @@ document.addEventListener("DOMContentLoaded", function() {
     "es": {"input": "debe ser completado", "checkbox": "Todas las casillas deben estar marcadas"},
     "pt": {"input": "deve ser preenchido", "checkbox": "Todas as caixas de seleção devem ser marcadas"},
     "en": {"input": "is required", "checkbox": "All checkboxes must be checked"}
-    
+    // Weitere Sprachen können hier hinzugefügt werden
 };
+   
+   function onSubmit(token) {
+     
+
+        // Funktion zur Validierung und Behandlung von Formularen
+        function handleForm(formId) {
+            var form = document.getElementById(formId);
+            if (!form) {
+               
+                return; // Wenn das Formular nicht existiert, beende die Funktion
+            }
+          
+
+            var requiredFields = form.querySelectorAll('[required]');
+            var userLang = sessionStorage.getItem("reg") || "en";
+         
 
           var allFilled = true;
     // Select all required fields within the form
@@ -151,22 +158,164 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Display all collected error messages if any field is not filled, otherwise submit the form
-    if (!allFilled) {
-        alert(errorMessageList.join("\n"));
-    } else {
-        form.submit();
-    }
+       if (!allFilled) {
+                setTimeout(function() {
+                    alert(errorMessageList.join("\n"));
+                }, 10); // Delay the alert slightly to ensure UI updates happen first
+            } else {
+                form.submit();
+            }
 }
 
-        // Handle specific forms based on their ID
+        // Behandeln spezifischer Formulare basierend auf ihrer ID
         handleForm("wf-form-Sign-Up");
         handleForm("wf-form-Sign-Up-2");
     }
 
-    // Make the onSubmit function globally available for ReCAPTCHA
+    // Die onSubmit Funktion global verfügbar machen für ReCAPTCHA
     window.onSubmit = onSubmit;
 });
 </script>
 
-_____________________________
+___________________________________________________________________________________________________________________
 
+
+
+
+
+Furthermore we want to track user form interactions, with datalayer pushes. that is why we have the following code:
+
+
+
+<!--Combine two form fields to generate phone number with dialing code-->
+<script>
+
+var dial = document.getElementById('Dialing-code');
+var number = document.getElementById('Phone-number');
+var completenumber = document.getElementById('Phone-sup');
+
+
+
+
+number.addEventListener('input', function (evt) {
+completenumber.value = dial.value + " " + number.value;
+});
+
+
+</script>
+
+<script>
+
+const form = document.querySelector('#Sign-Up-sales-force');
+const country = document.querySelector('#Land-sup');
+const buyer = document.querySelector('#Datenschutz-sup');
+
+function submitForm() {
+
+  window.dataLayer = window.dataLayer || [];
+  dataLayer.push({
+    'event': 'buyer-signup-form-submit',
+    'country': country.value,
+    'buyer': buyer.checked,
+  }); 
+}
+
+form.addEventListener('submit', submitForm);  
+  
+</script>
+
+<script>
+//Tracking inputs
+
+//company name
+$('#Firmenname-sup').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_companyName',
+  formName: 'registration_form_registration_form_top_signupLP'
+ });
+ 
+});
+
+//Country
+$('#Land-sup').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_Country',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+
+//email
+$('#Email-sup').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_Email',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+
+//dialing-code
+$('#Dialing-code').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_dialingCode',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+
+//phone-number
+$('#Phone-number').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_phoneNumber',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+//confirmation Car Dealer
+$('#Autohaendler-sup').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_carDealerConfirmation',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+//GDPR
+$('#Datenschutz-sup').click(function() {
+
+ window.dataLayer.push({
+  event: 'gtm_event',
+  eventName: 'registration_form_interaction',
+  itemName: 'click_GDPR',
+  formName: 'registration_form_registration_form_signupLP'
+ });
+ 
+});
+
+$("#confirm").click(function() {
+  sessionStorage.setItem("form", "signup-lp");
+});
+
+</script>
