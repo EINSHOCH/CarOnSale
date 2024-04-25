@@ -48,7 +48,7 @@ Furthermore we want to disable all not useable dropdown items:
 
 So we have the following code:
 
-
+```javascript
 <script>
 
   // make first option not clickable 
@@ -177,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+```
 ___________________________________________________________________________________________________________________
 
 
